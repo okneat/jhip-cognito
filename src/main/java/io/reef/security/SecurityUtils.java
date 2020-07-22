@@ -76,6 +76,11 @@ public final class SecurityUtils {
             getAuthorities(authentication).anyMatch(authority::equals);
     }
 
+    @SuppressWarnings("unchecked")
+    public static Collection<? extends GrantedAuthority> extractAuthorityFromAttributes(Map<String, Object> attributes) {
+        return mapRolesToGrantedAuthorities((Collection<String>) attributes.getOrDefault("cognito:groups", new ArrayList<>()));
+    }
+
     private static Stream<String> getAuthorities(Authentication authentication) {
         Collection<? extends GrantedAuthority> authorities = authentication instanceof JwtAuthenticationToken ?
             extractAuthorityFromClaims(((JwtAuthenticationToken) authentication).getToken().getClaims())
